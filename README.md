@@ -1,2 +1,2 @@
-# beford_app
-beford_app
+# benford_app
+benford_app
