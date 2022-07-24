@@ -23,23 +23,24 @@ def benfords(df):
             digits.append(first_digit)
 
         # setup dataframe with first digit frequency and Benford expected frequency
+        df_digit['Benford'] = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
         df_digit['Number'] = [digit for digit in range(1,10)]
-        df_digit['Count'] = [Counter(digits)[number] for number in df_digit['Number']]
-        df_digit['Frequency'] = [float(count) / (df_digit['Count'].sum()) for count in df_digit['Count']]
-        df_digit['Benford'] = [log10(1 + 1 / float(d)) for d in range(1,10)]
+        df_digit['Actual Count'] = [Counter(digits)[number] for number in df_digit['Number']]
+        total_count = df_digit['Actual Count'].sum()
+        df_digit['Frequency'] = [float(count) / (df_digit['Actual Count'].sum()) for count in df_digit['Actual Count']]
+        df_digit['Expected Count'] = [round(p * total_count/ 100) for p in df_digit['Benford'].values]
 
         st.subheader("Trend of target column")
         fig = go.Figure()
-        fig.add_trace(go.Bar(x=df_digit.Number, 
-                            y=df_digit.Frequency, 
+        fig.add_trace(go.Bar(x=df_digit['Number'], 
+                            y=df_digit['Actual Count'], 
                             name='Actual'))
-        # fig.update_yaxes(type='Frequency')
-        fig.add_trace(go.Scatter(x= df_digit.Number, 
-                                y=df_digit.Benford, 
+        fig.add_trace(go.Scatter(x= df_digit['Number'], 
+                                y=df_digit['Expected Count'], 
                                 mode = 'lines+markers', 
-                                name='Benford'))
+                                name='Expected'))
         fig.update_xaxes(title_text="Digits")
-        fig.update_yaxes(title_text="Frequency")
+        fig.update_yaxes(title_text="Counts")
         
     else:
         print(f'The selected column is not numeric!{target_column}')
@@ -47,12 +48,10 @@ def benfords(df):
 
     return fig, df_digit
 
-
 def chi_square_test(data_count, expected_counts):
   """Return boolean on chi-square test (8 DOF & P-val=0.05)."""
   chi_square_stat = 0; # chi-square test statistic
   for data, expected in zip(data_count, expected_counts):
     chi_square = math.pow(data - expected, 2)
     chi_square_stat += chi_square / expected
-
   return chi_square_stat

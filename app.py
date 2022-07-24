@@ -4,17 +4,17 @@ import plotly.express as px
 import streamlit as st
 import functions
 
-
 def main():
     st.title("Application of Benford's Law to any dataset")
 
-    menu = ["Titanic_data","Census_2009b_data","Banking_data","User_data"]
+    menu = ["sinoforest_data","Census_2009b_data","twitter_data","User_data"]
     choice = st.sidebar.selectbox("Select Dataset",menu)
 
-    if choice == "Titanic_data":
-        st.subheader("Titanic data")
+    # Case for Titanic data
+    if choice == "sinoforest_data":
+        st.subheader("Financial Statements numbers of Sino Forest Corp. (public dataset)")
 
-        df = pd.read_csv('titanic.csv')
+        df = pd.read_csv('sinoforest_data.csv')
         st.dataframe(df)
         fig, df_digit = functions.benfords(df)
         if fig:
@@ -22,13 +22,14 @@ def main():
             st.plotly_chart(fig)
             st.caption("Chart Data")
             st.dataframe(df_digit) 
-            chi_square_stat = functions.chi_square_test(df_digit['Frequency'],df_digit['Benford'])
-
+            chi_square_stat = functions.chi_square_test(df_digit['Actual Count'],df_digit['Expected Count'])
+            
             st.caption("\nChi Squared Test Statistic = {:.3f}".format(chi_square_stat))
-            st.caption("Critical value at P-value of 0.05 is 15.51")
+            st.caption("As per Chi-Sq table critical value at P-value of 0.05 is 15.51")
             st.caption("The Observed and the expected distributions are the same : ")
             st.caption(chi_square_stat < 15.51)   
 
+    # case for Census data
     elif choice == "Census_2009b_data":
         st.subheader("Census_2009b data")
         
@@ -40,17 +41,18 @@ def main():
             st.plotly_chart(fig)
             st.caption("Chart Data")
             st.dataframe(df_digit) 
-            chi_square_stat = functions.chi_square_test(df_digit['Frequency'],df_digit['Benford'])
+            chi_square_stat = functions.chi_square_test(df_digit['Actual Count'],df_digit['Expected Count'])
 
             st.caption("\nChi Squared Test Statistic = {:.3f}".format(chi_square_stat))
-            st.caption("Critical value at P-value of 0.05 is 15.51")
+            st.caption("As per Chi-Sq table critical value at P-value of 0.05 is 15.51")
             st.caption("The Observed and the expected distributions are the same : ")
             st.caption(chi_square_stat < 15.51)   
 
-    elif choice == "Banking_data":
-        st.subheader("Bank Marketing Campaign data")
+
+    elif choice == "twitter_data":
+        st.subheader("100 Most-followed Twitter personalities in 2019 (public dataset)")
         
-        df = pd.read_csv('bank_marketing_data.csv')
+        df = pd.read_csv('twitter_data.csv')
         st.dataframe(df)
         fig, df_digit = functions.benfords(df)
         if fig:
@@ -58,12 +60,12 @@ def main():
             st.plotly_chart(fig)
             st.caption("Chart Data")
             st.dataframe(df_digit) 
-            chi_square_stat = functions.chi_square_test(df_digit['Frequency'],df_digit['Benford'])
+            chi_square_stat = functions.chi_square_test(df_digit['Actual Count'],df_digit['Expected Count'])
 
             st.caption("\nChi Squared Test Statistic = {:.3f}".format(chi_square_stat))
-            st.caption("Critical value at P-value of 0.05 is 15.51")
+            st.caption("As per Chi-Sq table critical value at P-value of 0.05 is 15.51")
             st.caption("The Observed and the expected distributions are the same : ")
-            st.caption(chi_square_stat < 15.51)   
+            st.caption(chi_square_stat < 15.51) 
 
     elif choice == "User_data":
         st.subheader("User uploaded dataset")
@@ -82,10 +84,10 @@ def main():
                 st.plotly_chart(fig)
                 st.caption("Chart Data")
                 st.dataframe(df_digit) 
-                chi_square_stat = functions.chi_square_test(df_digit['Frequency'],df_digit['Benford'])
+                chi_square_stat = functions.chi_square_test(df_digit['Actual Count'],df_digit['Expected Count'])
 
                 st.caption("\nChi Squared Test Statistic = {:.3f}".format(chi_square_stat))
-                st.caption("Critical value at P-value of 0.05 is 15.51")
+                st.caption("As per Chi-Sq table critical value at P-value of 0.05 is 15.51")
                 st.caption("The Observed and the expected distributions are the same : ")
                 st.caption(chi_square_stat < 15.51)   
 
